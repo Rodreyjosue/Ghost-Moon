@@ -1,0 +1,356 @@
+<div class="container-fluid">
+  <!-- Indicador de carga -->
+  <div *ngIf="!componenteInicializado" class="row mb-3">
+    <div class="col-12">
+      <div class="alert alert-info text-center py-2">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        Cargando administración de proyectos...
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="componenteInicializado">
+    <div class="col-12">
+      <h2 class="mb-4">Administración de Proyectos - Ghost Moon</h2>
+    </div>
+  </div>
+
+  <!-- Gestión del Proyecto -->
+  <div class="row mb-3" *ngIf="componenteInicializado">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-primary text-white py-2">
+          <h6 class="mb-0">Gestión del Proyecto</h6>
+        </div>
+        <div class="card-body py-2">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6">
+              <label class="form-label small mb-1">Nombre del Proyecto</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="proyecto.nombre">
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-success btn-sm" (click)="calcularCPM()" 
+                        [disabled]="proyecto.actividades.length === 0 || calculando">
+                  <i class="fas fa-calculator me-1"></i>
+                  {{ calculando ? 'Calculando...' : 'Calcular CPM' }}
+                </button>
+                <button class="btn btn-info btn-sm" (click)="cargarProyectoPredefinido()">
+                  <i class="fas fa-download me-1"></i>
+                  Cargar Ejemplo
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" (click)="nuevoProyecto()">
+                  <i class="fas fa-plus me-1"></i>
+                  Nuevo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario para Agregar Actividades -->
+  <div class="row mb-3" *ngIf="componenteInicializado">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header bg-success text-white py-2">
+          <h6 class="mb-0">Agregar Nueva Actividad</h6>
+        </div>
+        <div class="card-body py-2">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+              <label class="form-label small mb-1">Nombre de la Actividad</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="nuevaActividad.nombre" 
+                     placeholder="Ej: Compra de materiales">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label small mb-1">Duración (días)</label>
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="nuevaActividad.duracion" 
+                     min="0" step="1" placeholder="0">
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small mb-1">Actividades Predecesoras</label>
+              <div class="input-group input-group-sm">
+                <select class="form-select" [(ngModel)]="nuevaActividadPredecesoraId">
+                  <option value="">Seleccionar predecesora...</option>
+                  <option *ngFor="let act of actividadesDisponiblesParaPredecesoras" 
+                          [value]="act.id">
+                    {{act.id}} - {{act.nombre}}
+                  </option>
+                </select>
+                <button class="btn btn-outline-primary" type="button" 
+                        (click)="agregarPredecesora()" [disabled]="!nuevaActividadPredecesoraId">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div *ngIf="nuevaActividad.predecesoras.length > 0" class="mt-1">
+                <small class="text-muted d-block mb-1">Predecesoras seleccionadas:</small>
+                <div class="d-flex flex-wrap gap-1">
+                  <span *ngFor="let predId of nuevaActividad.predecesoras; let i = index" 
+                        class="badge bg-primary d-flex align-items-center py-1 px-2">
+                    {{predId}}
+                    <button type="button" class="btn-close btn-close-white ms-1" 
+                            style="font-size: 0.5rem;" (click)="eliminarPredecesora(i)"></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-primary btn-sm w-100" (click)="agregarActividad()" 
+                      [disabled]="!nuevaActividad.nombre || nuevaActividad.duracion < 0">
+                <i class="fas fa-plus me-1"></i>
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado Vacío -->
+  <div class="row mb-3" *ngIf="componenteInicializado && proyecto.actividades.length === 0">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No hay actividades en el proyecto</h5>
+          <p class="text-muted mb-3">Comienza agregando la primera actividad o carga el ejemplo de expansión de almacén.</p>
+          <button class="btn btn-primary" (click)="cargarProyectoPredefinido()">
+            <i class="fas fa-download me-1"></i>
+            Cargar Ejemplo de Expansión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido cuando hay actividades -->
+  <div *ngIf="componenteInicializado && proyecto.actividades.length > 0">
+    <!-- Resultados del CPM -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header bg-warning py-2">
+            <h6 class="mb-0">Resultados del Análisis CPM</h6>
+          </div>
+          <div class="card-body py-2">
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <div class="card bg-light h-100">
+                  <div class="card-body text-center p-2">
+                    <h6 class="mb-1">Duración Total</h6>
+                    <h4 class="text-primary mb-0">{{proyecto.duracionTotal}} días</h4>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="card bg-light h-100">
+                  <div class="card-body p-2">
+                    <h6 class="mb-1">Ruta Crítica</h6>
+                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                      <span *ngFor="let actId of proyecto.rutaCritica; let i = index" 
+                            class="badge bg-danger fs-6">
+                        {{actId}}
+                        <span *ngIf="i < proyecto.rutaCritica.length - 1" class="ms-1">→</span>
+                      </span>
+                      <span *ngIf="proyecto.rutaCritica.length === 0" class="text-muted small">
+                        Calcule CPM para ver la ruta crítica
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Actividades -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header bg-info text-white py-2">
+            <h6 class="mb-0 d-flex justify-content-between align-items-center">
+              <span>Actividades del Proyecto ({{proyecto.actividades.length}})</span>
+              <button class="btn btn-sm btn-light" (click)="toggleTablaExpandida()">
+                <i class="fas" [class.fa-expand]="!tablaExpandida" [class.fa-compress]="tablaExpandida"></i>
+              </button>
+            </h6>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive" [style.max-height]="tablaExpandida ? '400px' : '250px'">
+              <table class="table table-sm table-striped table-hover mb-0">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th width="4%">ID</th>
+                    <th width="20%">Actividad</th>
+                    <th width="6%">Duración</th>
+                    <th width="12%">Predecesoras</th>
+                    <th width="7%">ES</th>
+                    <th width="7%">EF</th>
+                    <th width="7%">LS</th>
+                    <th width="7%">LF</th>
+                    <th width="7%">Holgura</th>
+                    <th width="8%">Estado</th>
+                    <th width="15%">Gestionar Predecesoras</th>
+                    <th width="5%">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let actividad of proyecto.actividades; trackBy: trackByActividad" 
+                      [class.table-warning]="actividad.esCritica">
+                    <td><strong>{{actividad.id}}</strong></td>
+                    <td class="text-truncate" [title]="actividad.nombre">{{actividad.nombre}}</td>
+                    <td>{{actividad.duracion}}d</td>
+                    <td>
+                      <span *ngFor="let pred of actividad.predecesoras" class="badge bg-secondary me-1">
+                        {{pred}}
+                      </span>
+                      <span *ngIf="actividad.predecesoras.length === 0" class="text-muted">-</span>
+                    </td>
+                    <td>{{actividad.earlyStart}}</td>
+                    <td>{{actividad.earlyFinish}}</td>
+                    <td>{{actividad.lateStart}}</td>
+                    <td>{{actividad.lateFinish}}</td>
+                    <td>
+                      <span [class.text-success]="actividad.holgura > 0" 
+                            [class.text-danger]="actividad.holgura === 0"
+                            [class.fw-bold]="actividad.holgura === 0">
+                        {{actividad.holgura}}d
+                      </span>
+                    </td>
+                    <td>
+                      <span *ngIf="actividad.esCritica" class="badge bg-danger">CRÍTICA</span>
+                      <span *ngIf="!actividad.esCritica" class="badge bg-success">NO CRÍTICA</span>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-1 mb-1">
+                        <select class="form-select form-select-sm" 
+                                [(ngModel)]="predecesoraSeleccionada[actividad.id]"
+                                style="width: 100px;">
+                          <option value="">Agregar...</option>
+                          <option *ngFor="let pred of getPredecesorasDisponiblesParaActividad(actividad)" 
+                                  [value]="pred.id">
+                            {{pred.id}}
+                          </option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-success" 
+                                (click)="agregarPredecesoraExistente(actividad)"
+                                [disabled]="!predecesoraSeleccionada[actividad.id]">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
+                      <div *ngIf="actividad.predecesoras.length > 0">
+                        <div class="d-flex flex-wrap gap-1">
+                          <span *ngFor="let pred of actividad.predecesoras" 
+                                class="badge bg-danger cursor-pointer py-1"
+                                (click)="eliminarPredecesoraExistente(actividad, pred)">
+                            {{pred}} ×
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-danger" 
+                              (click)="eliminarActividad(actividad.id)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagrama de Red -->
+    <div class="row" *ngIf="mostrarRed">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header bg-dark text-white py-2">
+            <h6 class="mb-0">
+              <i class="fas fa-project-diagram me-1"></i>
+              Diagrama de Red del Proyecto
+            </h6>
+          </div>
+          <div class="card-body p-2">
+            <div class="network-container">
+              
+              <!-- Conexiones -->
+              <svg class="network-connections">
+                <defs>
+                  <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                    <polygon points="0 0, 8 2.5, 0 5" fill="#666" />
+                  </marker>
+                  <marker id="arrowhead-critical" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                    <polygon points="0 0, 8 2.5, 0 5" fill="#dc3545" />
+                  </marker>
+                </defs>
+                <g>
+                  <line *ngFor="let conexion of conexionesRed; trackBy: trackByConexion"
+                        [attr.x1]="getNodoXMejorado(conexion.from) + 32" 
+                        [attr.y1]="getNodoYMejorado(conexion.from) + 25"
+                        [attr.x2]="getNodoXMejorado(conexion.to) + 32" 
+                        [attr.y2]="getNodoYMejorado(conexion.to) + 25"
+                        [attr.stroke]="conexion.esCritica ? '#dc3545' : '#666'"
+                        [attr.marker-end]="conexion.esCritica ? 'url(#arrowhead-critical)' : 'url(#arrowhead)'"
+                        stroke-width="1.5" />
+                </g>
+              </svg>
+
+              <!-- Nodos -->
+              <div *ngFor="let nodo of nodosRedMejorados; trackBy: trackByNodo" 
+                   [class]="nodo.esCritica ? 'network-node-cpm critical' : 'network-node-cpm'"
+                   [style.left.px]="nodo.x"
+                   [style.top.px]="nodo.y"
+                   [title]="nodo.actividad.nombre"
+                   style="position: absolute;">
+                <div class="node-id-cpm">{{nodo.actividad.id}}</div>
+                <div class="node-times-cpm">
+                  <div class="node-time-row">
+                    <span class="time-es">{{nodo.actividad.earlyStart}}</span>
+                    <span class="time-ef">{{nodo.actividad.earlyFinish}}</span>
+                  </div>
+                  <div class="node-time-row">
+                    <span class="time-ls">{{nodo.actividad.lateStart}}</span>
+                    <span class="time-lf">{{nodo.actividad.lateFinish}}</span>
+                  </div>
+                </div>
+                <div class="node-duration-cpm">{{nodo.actividad.duracion}}d</div>
+              </div>
+            </div>
+            
+            <!-- Leyenda -->
+            <div class="mt-2">
+              <h6 class="small mb-1">Leyenda:</h6>
+              <div class="d-flex gap-2 flex-wrap align-items-center">
+                <div class="d-flex align-items-center me-3">
+                  <div class="network-node-cpm-mini critical me-1"></div>
+                  <span class="small">Actividad Crítica</span>
+                </div>
+                <div class="d-flex align-items-center me-3">
+                  <div class="network-node-cpm-mini me-1"></div>
+                  <span class="small">Actividad Normal</span>
+                </div>
+                <div class="d-flex align-items-center me-3">
+                  <div style="width: 20px; height: 2px; background: #dc3545; margin-right: 6px;"></div>
+                  <span class="small">Ruta Crítica</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <div style="width: 20px; height: 2px; background: #666; margin-right: 6px;"></div>
+                  <span class="small">Ruta Normal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

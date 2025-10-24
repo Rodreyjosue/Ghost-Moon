@@ -1,0 +1,283 @@
+/* Estilos compactos y optimizados */
+.compact-card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  transition: all 0.15s ease-in-out;
+  margin-bottom: 1rem;
+}
+
+.compact-card:hover {
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.compact-card .card-body {
+  padding: 1rem;
+}
+
+.compact-card .card-header {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Layout compacto para productos */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 992px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Formularios compactos */
+.compact-form .form-label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.compact-form .form-control, 
+.compact-form .form-select {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+}
+
+.compact-form .form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Botones compactos */
+.btn-compact {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+}
+
+/* Resultados compactos */
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.utilization-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .results-grid,
+  .utilization-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gráfico optimizado */
+.chart-container-compact {
+  position: relative;
+  height: 400px;
+  width: 100%;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-container-compact canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Leyenda compacta */
+.legend-compact {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 1px solid #e9ecef;
+  font-size: 0.875rem;
+}
+
+.legend-compact-item {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+}
+
+.legend-compact-color {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* Progress bars compactas */
+.progress-compact {
+  height: 6px;
+  background-color: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-bar-compact {
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* Badges compactos */
+.badge-compact {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Alert compacto */
+.alert-compact {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+  margin-bottom: 0;
+}
+
+.alert-compact-success {
+  border-left-color: #198754;
+  background-color: #d1e7dd;
+}
+
+/* List group compacto */
+.list-group-compact .list-group-item {
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  font-size: 0.875rem;
+}
+
+.list-group-compact .list-group-item:last-child {
+  border-bottom: none;
+}
+
+/* Utilización de recursos compacta */
+.utilization-card-compact {
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.utilization-card-compact h6 {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.utilization-card-compact small {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Grid para el gráfico y leyenda */
+.chart-legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .chart-legend-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Títulos optimizados */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+
+/* Espaciado optimizado */
+.mb-compact {
+  margin-bottom: 1rem !important;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.text-purple {
+  color: #6f42c1;
+}
+
+.section-title {
+  border-bottom: 3px solid #e9ecef;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title.border-0 {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title .badge {
+  font-size: 0.7rem;
+  padding: 0.35rem 0.7rem;
+}
+
+.mt-compact {
+  margin-top: 1rem !important;
+}
+
+/* Scroll suave para contenedores */
+.scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

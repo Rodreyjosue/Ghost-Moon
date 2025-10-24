@@ -1,1 +1,49 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 56px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 48px 0 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
+.main-content {
+  margin-left: 0;
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 25%;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    margin-left: 16.666667%;
+  }
+}
+
+/* Navegación activa */
+.nav-link.active {
+  background-color: #0d6efd;
+  color: white !important;
+}
+
+.metric-card {
+  transition: transform 0.2s;
+  border: none;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}

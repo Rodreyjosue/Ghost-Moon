@@ -1,0 +1,25 @@
+<nav class="navbar navbar-dark fixed-top ultra-minimalist-navbar">
+  <div class="container-fluid">
+    <!-- Logo con imagen -->
+    <a class="navbar-brand ultra-minimalist-brand" routerLink="/dashboard">
+      <div class="moon-logo">
+        <img src="assets/images/logo.png" alt="Ghost Moon Logo" class="logo-image">
+        <!-- Fallback con icono -->
+        <i class="fas fa-moon fallback-icon"></i>
+      </div>
+      <span>Ghost Moon</span>
+    </a>
+    
+    <div class="nav-icons">
+      <a class="nav-icon" routerLink="/dashboard" routerLinkActive="active" title="Dashboard">
+        <i class="fas fa-chart-simple"></i>
+      </a>
+      <a class="nav-icon" routerLink="/programacion-lineal" routerLinkActive="active" title="Programación Lineal">
+        <i class="fas fa-diagram-project"></i>
+      </a>
+      <a class="nav-icon" routerLink="/administracion-proyectos" routerLinkActive="active" title="Proyectos">
+        <i class="fas fa-list-check"></i>
+      </a>
+    </div>
+  </div>
+</nav>

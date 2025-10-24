@@ -1,0 +1,229 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Dashboard - Ghost Moon</h2>
+    </div>
+  </div>
+
+  <!-- Resumen Principal -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h6 class="card-title">Ventas Totales 2025</h6>
+          <h3 class="mb-0">Q{{getTotalVentas2025() | number:'1.0-0'}}</h3>
+          <small>{{getCrecimientoPorcentual()}}% vs 2024</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h6 class="card-title">ROI Publicidad</h6>
+          <h3 class="mb-0">{{getROI()}}%</h3>
+          <small>Retorno sobre inversión</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h6 class="card-title">Utilidad Neta 2025</h6>
+          <h3 class="mb-0">Q{{getUtilidadNeta() | number:'1.0-0'}}</h3>
+          <small>Después de publicidad</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h6 class="card-title">Inversión Publicidad</h6>
+          <h3 class="mb-0">Q{{getTotalInversion() | number:'1.0-0'}}</h3>
+          <small>Total invertido</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficas Principales -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Comparativo Ventas 2024 vs 2025</h6>
+        </div>
+        <div class="card-body">
+          <canvas #ventasChart width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">ROI por Mes</h6>
+        </div>
+        <div class="card-body">
+          <canvas #roiChart width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Datos Editable -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h6 class="mb-0">Comparativo Ventas 2024 Vs 2025 - Análisis De Rentabilidad De Publicidad</h6>
+          <button class="btn btn-sm btn-primary" (click)="agregarMes()">
+            <i class="fas fa-plus me-1"></i>Agregar Mes
+          </button>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-sm table-striped table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Mes</th>
+                  <th>Ventas 2024</th>
+                  <th>Inversión Pub 2025</th>
+                  <th>Impacto Pub</th>
+                  <th>Ventas 2025</th>
+                  <th>ROI Mensual</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dato of datosVentas; let i = index">
+                  <td>
+                    <select class="form-select form-select-sm" [(ngModel)]="dato.mes">
+                      <option *ngFor="let mes of meses" [value]="mes">{{mes}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="dato.ventas2024" 
+                           (change)="calcularVentas2025(i)">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="dato.inversion2025" 
+                           (change)="calcularVentas2025(i)">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" step="0.01" 
+                           [(ngModel)]="dato.impacto" (change)="calcularVentas2025(i)">
+                  </td>
+                  <td>
+                    <span class="fw-bold text-success">Q{{dato.ventas2025 | number:'1.0-0'}}</span>
+                  </td>
+                  <td>
+                    <span [class]="getROIClass(dato.roi)">{{dato.roi}}%</span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-danger" (click)="eliminarMes(i)" 
+                            [disabled]="datosVentas.length <= 1">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot class="table-dark">
+                <tr>
+                  <td><strong>TOTAL</strong></td>
+                  <td><strong>Q{{getTotalVentas2024() | number:'1.0-0'}}</strong></td>
+                  <td><strong>Q{{getTotalInversion() | number:'1.0-0'}}</strong></td>
+                  <td></td>
+                  <td><strong>Q{{getTotalVentas2025() | number:'1.0-0'}}</strong></td>
+                  <td><strong>{{getROI()}}%</strong></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Análisis de Utilidades -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Análisis de Utilidades</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="card bg-light mb-3">
+                <div class="card-body text-center">
+                  <h6>2024 (Sin Publicidad)</h6>
+                  <h4 class="text-primary">Q{{getUtilidad2024() | number:'1.0-0'}}</h4>
+                  <small class="text-muted">Utilidad Neta</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card bg-light mb-3">
+                <div class="card-body text-center">
+                  <h6>2025 (Con Publicidad)</h6>
+                  <h4 class="text-success">Q{{getUtilidadNeta() | number:'1.0-0'}}</h4>
+                  <small class="text-muted">Utilidad Neta</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="progress mb-3" style="height: 25px;">
+            <div class="progress-bar bg-success" [style.width]="getPorcentajeCrecimientoUtilidad() + '%'">
+              Incremento: Q{{getIncrementoUtilidad() | number:'1.0-0'}}
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-4">
+              <small class="text-muted">Margen Utilidad</small>
+              <h6>{{margenUtilidad * 100}}%</h6>
+            </div>
+            <div class="col-4">
+              <small class="text-muted">Inversión Pub</small>
+              <h6>Q{{getTotalInversion() | number:'1.0-0'}}</h6>
+            </div>
+            <div class="col-4">
+              <small class="text-muted">ROI Total</small>
+              <h6>{{getROI()}}%</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Proyecciones Oct-Dic 2025</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Ventas Base</th>
+                  <th>Inversión</th>
+                  <th>Impacto</th>
+                  <th>Ventas Proy.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let proyeccion of proyecciones">
+                  <td>{{proyeccion.mes}}</td>
+                  <td>Q{{proyeccion.ventasBase | number:'1.0-0'}}</td>
+                  <td>Q{{proyeccion.inversion | number:'1.0-0'}}</td>
+                  <td>{{(proyeccion.impacto * 100)}}%</td>
+                  <td><strong>Q{{proyeccion.ventasProyectadas | number:'1.0-0'}}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

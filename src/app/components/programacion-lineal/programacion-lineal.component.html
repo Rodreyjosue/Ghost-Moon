@@ -1,0 +1,268 @@
+<div class="container-fluid">
+  <!-- Header Compacto -->
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Optimización de Costos - GHOST MOON</h2>
+    </div>
+  </div>
+  
+  
+
+  <!-- Grid de Productos -->
+  <div class="products-grid">
+    <!-- Producto X -->
+    <div class="compact-card">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <span>{{productoX.nombre}}</span>
+        <small class="opacity-75">Producto X</small>
+      </div>
+      <div class="card-body compact-form">
+        <div class="row g-2">
+          <div class="col-12">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" [(ngModel)]="productoX.nombre" placeholder="Nombre producto">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Utilidad (Q)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoX.utilidad" min="0" step="1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Tiempo (h)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoX.tiempo" min="0" step="0.1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Material (m)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoX.material" min="0" step="0.1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Almacén Max</label>
+            <input type="number" class="form-control" [(ngModel)]="productoX.maxAlmacen" min="0" step="1">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Producto Y -->
+    <div class="compact-card">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <span>{{productoY.nombre}}</span>
+        <small class="opacity-75">Producto Y</small>
+      </div>
+      <div class="card-body compact-form">
+        <div class="row g-2">
+          <div class="col-12">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" [(ngModel)]="productoY.nombre" placeholder="Nombre producto">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Utilidad (Q)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoY.utilidad" min="0" step="1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Tiempo (h)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoY.tiempo" min="0" step="0.1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Material (m)</label>
+            <input type="number" class="form-control" [(ngModel)]="productoY.material" min="0" step="0.1">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Almacén Max</label>
+            <input type="number" class="form-control" [(ngModel)]="productoY.maxAlmacen" min="0" step="1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restricciones Compactas -->
+  <div class="compact-card mb-compact">
+    <div class="card-header bg-warning text-dark">
+      <h6 class="mb-0">Restricciones de Producción</h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Horas Disponibles por Semana</label>
+          <input type="number" class="form-control" [(ngModel)]="restricciones.horasDisponibles" min="0" step="1">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Material Disponible (metros)</label>
+          <input type="number" class="form-control" [(ngModel)]="restricciones.materialDisponible" min="0" step="1">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="row mb-compact">
+    <div class="col-12">
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary btn-compact flex-fill" (click)="calcularSolucion()">
+          <i class="fas fa-calculator me-2"></i>
+          Calcular Solución Óptima
+        </button>
+        <button class="btn btn-secondary btn-compact" (click)="resetearValores()">
+          <i class="fas fa-redo"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados - Solo se muestra cuando hay solución -->
+  <div class="row" *ngIf="solucion.mensaje">
+    <div class="col-12">
+      <div class="compact-card" [class.border-success]="solucion.factible" [class.border-danger]="!solucion.factible">
+        <div class="card-header" [class.bg-success]="solucion.factible" [class.bg-danger]="!solucion.factible">
+          <h6 class="mb-0 text-white">
+            <i class="fas me-2" [class.fa-check]="solucion.factible" [class.fa-times]="!solucion.factible"></i>
+            {{solucion.mensaje}}
+          </h6>
+        </div>
+        
+        <div class="card-body" *ngIf="solucion.factible">
+          <!-- Grid de Resultados Principales -->
+          <div class="results-grid">
+            <!-- Producción Óptima -->
+            <div>
+              <h6 class="mb-2">Producción Óptima Semanal</h6>
+              <div class="list-group list-group-compact">
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <small>{{productoX.nombre}}</small>
+                  <span class="badge bg-primary badge-compact">{{solucion.x}} unidades</span>
+                </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <small>{{productoY.nombre}}</small>
+                  <span class="badge bg-success badge-compact">{{solucion.y}} unidades</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Utilidad Total -->
+            <div>
+              <h6 class="mb-2">Utilidad Semanal</h6>
+              <div class="alert-compact alert-compact-success">
+                <div class="fw-bold fs-5">Q {{solucion.utilidadTotal | number}}</div>
+                <small class="text-muted">Utilidad total optimizada</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Utilización de Recursos -->
+          <div class="mt-compact" *ngIf="utilizacionRecursos">
+            <h6 class="mb-2">Utilización de Recursos</h6>
+            <div class="utilization-grid">
+              <!-- Tiempo -->
+              <div class="utilization-card-compact">
+                <h6>⏱️ Tiempo</h6>
+                <div class="progress-compact">
+                  <div class="progress-bar-compact" 
+                       [class.bg-success]="utilizacionRecursos.tiempo.porcentaje <= 80"
+                       [class.bg-warning]="utilizacionRecursos.tiempo.porcentaje > 80 && utilizacionRecursos.tiempo.porcentaje <= 95"
+                       [class.bg-danger]="utilizacionRecursos.tiempo.porcentaje > 95"
+                       [style.width.%]="utilizacionRecursos.tiempo.porcentaje">
+                  </div>
+                </div>
+                <small>
+                  {{utilizacionRecursos.tiempo.usado | number:'1.1-1'}}/{{utilizacionRecursos.tiempo.disponible}}h
+                  <br>({{utilizacionRecursos.tiempo.porcentaje | number:'1.0-1'}}%)
+                </small>
+              </div>
+
+              <!-- Material -->
+              <div class="utilization-card-compact">
+                <h6>📦 Material</h6>
+                <div class="progress-compact">
+                  <div class="progress-bar-compact" 
+                       [class.bg-success]="utilizacionRecursos.material.porcentaje <= 80"
+                       [class.bg-warning]="utilizacionRecursos.material.porcentaje > 80 && utilizacionRecursos.material.porcentaje <= 95"
+                       [class.bg-danger]="utilizacionRecursos.material.porcentaje > 95"
+                       [style.width.%]="utilizacionRecursos.material.porcentaje">
+                  </div>
+                </div>
+                <small>
+                  {{utilizacionRecursos.material.usado | number:'1.1-1'}}/{{utilizacionRecursos.material.disponible}}m
+                  <br>({{utilizacionRecursos.material.porcentaje | number:'1.0-1'}}%)
+                </small>
+              </div>
+
+              <!-- Almacén -->
+              <div class="utilization-card-compact">
+                <h6>🏪 Almacén</h6>
+                <div class="progress-compact">
+                  <div class="progress-bar-compact" 
+                       [class.bg-success]="utilizacionRecursos.almacen.porcentaje <= 80"
+                       [class.bg-warning]="utilizacionRecursos.almacen.porcentaje > 80 && utilizacionRecursos.almacen.porcentaje <= 95"
+                       [class.bg-danger]="utilizacionRecursos.almacen.porcentaje > 95"
+                       [style.width.%]="utilizacionRecursos.almacen.porcentaje">
+                  </div>
+                </div>
+                <small>
+                  {{utilizacionRecursos.almacen.usado}}/{{utilizacionRecursos.almacen.disponible}}u
+                  <br>({{utilizacionRecursos.almacen.porcentaje | number:'1.0-1'}}%)
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráfico de Solución Compacto -->
+  <div class="row mt-compact" *ngIf="mostrarGrafico && solucion.factible">
+    <div class="col-12">
+      <div class="compact-card">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-chart-line me-2"></i>
+            Visualización Gráfica - Región Factible
+          </h6>
+        </div>
+        <div class="card-body p-2">
+          <div class="chart-legend-grid">
+            <!-- Gráfico -->
+            <div class="chart-container-compact">
+              <canvas #graficoCanvas></canvas>
+            </div>
+
+            <!-- Leyenda Compacta -->
+            <div class="legend-compact">
+              <h6 class="mb-2">Leyenda</h6>
+              <div class="legend-compact-item">
+                <span class="legend-compact-color" style="background-color: rgba(144, 238, 144, 0.3);"></span>
+                <span>Región Factible</span>
+              </div>
+              <div class="legend-compact-item">
+                <span class="legend-compact-color" style="background-color: rgba(54, 162, 235, 1);"></span>
+                <span>Vértices</span>
+              </div>
+              <div class="legend-compact-item">
+                <span class="legend-compact-color" style="background-color: rgba(255, 99, 132, 1);"></span>
+                <span>Solución Óptima</span>
+              </div>
+              <div class="legend-compact-item">
+                <span class="legend-compact-color" style="background-color: rgba(255, 159, 64, 1); border: 2px dashed rgba(255, 159, 64, 1);"></span>
+                <span>Límite Tiempo</span>
+              </div>
+              <div class="legend-compact-item">
+                <span class="legend-compact-color" style="background-color: rgba(75, 192, 192, 1); border: 2px dashed rgba(75, 192, 192, 1);"></span>
+                <span>Límite Material</span>
+              </div>
+              
+              <div class="mt-3 p-2 bg-light rounded">
+                <small class="fw-bold">Interpretación:</small>
+                <div class="mt-1">
+                  <small>• <strong>Área verde</strong>: Soluciones posibles</small><br>
+                  <small>• <strong>Punto rojo</strong>: Mejor solución</small><br>
+                  <small>• <strong>Líneas</strong>: Restricciones</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

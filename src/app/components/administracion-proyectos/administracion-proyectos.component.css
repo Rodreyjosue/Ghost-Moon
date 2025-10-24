@@ -1,0 +1,146 @@
+/* Estilos optimizados para el diagrama de red */
+.network-container {
+  position: relative;
+  min-height: 350px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.network-connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.network-node-cpm {
+  position: absolute;
+  width: 64px;
+  height: 50px;
+  background: white;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.network-node-cpm:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.network-node-cpm.critical {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.node-id-cpm {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.node-times-cpm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.node-time-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  line-height: 1;
+}
+
+.time-es, .time-ef, .time-ls, .time-lf {
+  font-size: 7px;
+}
+
+.node-duration-cpm {
+  font-size: 9px;
+  font-weight: bold;
+  margin-top: 2px;
+  color: #495057;
+}
+
+.network-node-cpm-mini {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #007bff;
+  border-radius: 3px;
+  background: white;
+}
+
+.network-node-cpm-mini.critical {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.connection-line {
+  transition: all 0.3s ease;
+}
+
+/* Mejoras para tablas */
+.table-responsive {
+  scrollbar-width: thin;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+/* Estados de carga */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Badges interactivos */
+.badge.cursor-pointer {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.badge.cursor-pointer:hover {
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .network-node-cpm {
+    width: 56px;
+    height: 44px;
+    font-size: 9px;
+  }
+  
+  .node-times-cpm {
+    padding: 0 1px;
+  }
+  
+  .node-time-row {
+    font-size: 7px;
+  }
+  
+  .node-duration-cpm {
+    font-size: 8px;
+  }
+}
